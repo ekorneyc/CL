@@ -1,0 +1,10 @@
+hostname=ISE-AZURE
+primarynameserver=172.31.0.2
+dnsdomain=example.com
+ntpserver=time.nist.gov
+timezone=Etc/UTC
+password=Krakow123
+ersapi=yes
+openapi=yes
+pxGrid=no
+pxgrid_cloud=no

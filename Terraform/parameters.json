@@ -1,0 +1,78 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "hostName": {
+            "value": "ISE-AZURE-TMP"
+        },
+        "SSHKeyPairName": {
+            "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCss5NKsOpBz06tWVecl2aLumea+4WOwUDqXYwlif7owDcp6r9fsGwEWaDywOHZ/4e9YXZTgiwWcw7E/q8ntSe4RZlkzG4M3teoTmbCjFJrV+tpAwcPAS9FUG+e1Pa5edf8I9w7FVF4cSb0Q9BOvY2uTJy5OOfXIc5MecVpFyosJDbKv/aE3oJNXZYIyYQV+qFx4mC/9qq6FZK5hvmMvYbNZzdbylbpZ8rktEaYhKoiA7erptluGpsv+WrUdt0r4DjoI6tCExancFpUzmTI0wDchn2FJlF54hqhl7/a+EYcPeXERqM0UT3TE214i7cApGdJPcL6B5RNgNiuAVQKOF2P4vKmMNGAxyFggCzQUyPqbAvv6BnKUahYhgU+7jhQ6Zs33fYAlVjLWK45QS7X0f2/AA7ZdsPtb+dJHK80JNSTVAPMMMDpszdIcjqXfztJXKeuMRk2BBKUb3EJKH+msUbxK2tJo5vSlYKGT2NMnzgtQjHX39bPt4+Qu2fGFNZhUxk= generated-by-azure"
+        },
+        "managementNetwork": {
+            "value": "vnet01"
+        },
+        "managementNSG": {
+            "value": ""
+        },
+        "managementSubnet": {
+            "value": "subnet5"
+        },
+        "managementPrivateIP": {
+            "value": "10.1.4.200"
+        },
+        "publicIpName": {
+            "value": "ISE-AZURE-TMP-ip"
+        },
+        "publicIpNewOrExisting": {
+            "value": "new"
+        },
+        "publicIpResourceGroupName": {
+            "value": "ekorneyc-RG"
+        },
+        "publicIPAllocationMethod": {
+            "value": "Dynamic"
+        },
+        "publicIpSku": {
+            "value": "Basic"
+        },
+        "timeZone": {
+            "value": "Etc/UTC"
+        },
+        "instanceType": {
+            "value": "Standard_F16s_v2"
+        },
+        "storageType": {
+            "value": "Premium_LRS"
+        },
+        "volumeSize": {
+            "value": 600
+        },
+        "DNSDomain": {
+            "value": "example.com"
+        },
+        "nameServer": {
+            "value": "172.31.0.2"
+        },
+        "NTPServer": {
+            "value": "time.nist.gov"
+        },
+        "ERS": {
+            "value": "yes"
+        },
+        "openAPI": {
+            "value": "yes"
+        },
+        "PXGrid": {
+            "value": "no"
+        },
+        "PXGridCloud": {
+            "value": "no"
+        },
+        "systemPassword": {
+            "value": null
+        },
+        "location": {
+            "value": "eastus"
+        }
+    }
+}

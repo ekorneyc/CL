@@ -1,0 +1,10 @@
+hostname=ISE-AWS
+primarynameserver=172.31.0.2
+dnsdomain=example.com
+ntpserver=time.nist.gov
+timezone=UTC
+password=Krakow123
+ersapi=yes
+openapi=yes
+pxGrid=no
+pxgrid_cloud=no
