@@ -1,0 +1,143 @@
+- hosts: ise_servers
+  vars_files:
+    - credentials.yml
+  gather_facts: no
+  tasks:
+
+  - name: Create User Group VPN_Users
+    cisco.ise.identity_group:
+      ise_hostname: "{{ise_hostname}}"
+      ise_username: "{{ise_username}}"
+      ise_password: "{{ise_password}}"
+      ise_verify: "{{ise_verify}}"
+      state: present
+      name: VPN_Users
+    register: group
+
+  - name: Create User Alice
+    cisco.ise.internal_user:
+      ise_hostname: "{{ise_hostname}}"
+      ise_username: "{{ise_username}}"
+      ise_password: "{{ise_password}}"
+      ise_verify: "{{ise_verify}}"
+      state: present
+      identityGroups: "{{ group.ise_response.id }}"
+      name: Alice
+      password: "{{vpn_password}}"
+    register: result
+
+  - name: Create or update ASAv-AWS
+    cisco.ise.network_device:
+      ise_hostname: "{{ise_hostname}}"
+      ise_username: "{{ise_username}}"
+      ise_password: "{{ise_password}}"
+      ise_verify: "{{ise_verify}}"
+      state: present
+      name: ASAv-AWS
+      NetworkDeviceIPList:
+      - ipaddress: 172.31.200.215
+        mask: 32
+      authenticationSettings:
+        radiusSharedSecret: 'cisco'
+        networkProtocol: 'RADIUS'
+      description: 'ASAv in AWS'
+    register: result
+
+  - name: Create or update ASAv-Azure
+    cisco.ise.network_device:
+      ise_hostname: "{{ise_hostname}}"
+      ise_username: "{{ise_username}}"
+      ise_password: "{{ise_password}}"
+      ise_verify: "{{ise_verify}}"
+      state: present
+      name: ASAv-Azure
+      NetworkDeviceIPList:
+      - ipaddress: 10.1.4.4
+        mask: 32
+      authenticationSettings:
+        radiusSharedSecret: 'cisco'
+        networkProtocol: 'RADIUS'
+      description: 'ASAv in Azure'
+    register: result
+
+  - name: Create or update a network access conditions
+    cisco.ise.network_access_conditions:
+      ise_hostname: "{{ise_hostname}}"
+      ise_username: "{{ise_username}}"
+      ise_password: "{{ise_password}}"
+      ise_verify: "{{ise_verify}}"
+      state: present
+      conditionType: "LibraryConditionAttributes"
+      isNegate: False
+      name: "Remote_Access_VPN_group_RA"
+      dictionaryName: "Cisco-VPN3000"
+      attributeName: "CVPN3000/ASA/PIX7x-Tunnel-Group-Name"
+      operator: "equals"
+      attributeValue: "RA"
+    register: condition
+
+  - name: Create Remote Access VPN Policy Set
+    cisco.ise.network_access_policy_set:
+      ise_hostname: "{{ise_hostname}}"
+      ise_username: "{{ise_username}}"
+      ise_password: "{{ise_password}}"
+      ise_verify: "{{ise_verify}}"
+      state: present
+      condition:
+        conditionType: "ConditionReference"
+        isNegate: False
+        id: "{{ condition.ise_response.id }}"
+      default: False
+      description: ""
+      isProxy: False
+      rank: 0
+      serviceName: "Default Network Access"
+      name: "Remote Access VPN Policy Set"
+    register: result  
+
+  - name: Create Authorization Policy
+    cisco.ise.network_access_authorization_rules:
+      ise_hostname: "{{ise_hostname}}"
+      ise_username: "{{ise_username}}"
+      ise_password: "{{ise_password}}"
+      ise_verify: "{{ise_verify}}"
+      state: present
+      policyId: "{{ result.ise_response.id }}"
+      profile: "PermitAccess"
+      rule:
+        condition:
+          conditionType: "ConditionReference"
+          isNegate: false
+          name: "Network_Access_Authentication_Passed"
+          id: "f0bc0b92-36e4-4a4f-a9cb-3efb2ea18819"
+        default: false
+        hitCounts: 0
+        name: 'Remote Access VPN Authorization Policy'
+        rank: 0
+        state: "enabled"
+
+  - name: Promote Standalone (Future PAN) to Primary Node
+    cisco.ise.personas_promote_primary:
+      ip: "44.202.103.213"
+      username: "{{ ise_username }}"
+      password: "{{ ise_password }}"
+
+  - name: Create Deployment
+    cisco.ise.node_deployment:
+      ise_hostname: "{{ise_hostname}}"
+      ise_username: "{{ise_username}}"
+      ise_password: "{{ise_password}}"
+      ise_verify: "{{ise_verify}}"
+      allowCertImport: true
+      fqdn: "ISE-Azure.example.com"
+      hostname: "ISE-Azure.example.com"
+      password: "{{ ise_password }}"
+      roles:
+        - SecondaryAdmin
+        - SecondaryMonitoring
+      services:
+        - Session
+        - Profiler
+      userName: "{{ ise_username }}"
+
+  
